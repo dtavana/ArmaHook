@@ -1,4 +1,21 @@
 ﻿{
-	"DiscordURL": "",
-	"UseCustomEmbedSettings": true
+	UseEmbeds: true,
+	Embeds: [
+		{
+			"EmbedKey": "test1",
+			"DiscordURL": "",
+			EmbedData: {
+				"title": "Meow!",
+				"color": 1127128
+			},
+		},
+		{
+			"EmbedKey": "test2",
+			"DiscordURL": "",
+			EmbedData: {
+				"title": "Meow?",
+				"color": 1127128
+			},
+		},
+	],
 }
