@@ -16,33 +16,51 @@ namespace ArmaHook
 
             string DEFAULT_ERROR = "[ArmaHook ERROR]: ";
             string DEFAULT_SUCCESS = "[ArmaHook SUCCESS]: ";
-            Dictionary<string, string> settings;
+            SettingsManager settings;
+            string json;
 
             settings = SettingsManager.LoadSettings();
-            bool rawContent = input[0] == '{' && input[input.Length - 1] == '}';
-            string json;
+
+            string[] inputSerialized = input.Split('~');
+            if (inputSerialized.Length != 2)
+            {
+                output.Append(DEFAULT_ERROR + "Could not parse input");
+                return;
+            }
+
+            string embedKey = inputSerialized[0];
+            string inputText = inputSerialized[1];
+            bool rawContent = inputText[0] == '{' && inputText[inputText.Length - 1] == '}';
+
+            CustomEmbed embedFromKey = SettingsManager.GetEmbedByKey(embedKey, settings);
+
+            if(embedFromKey == null)
+            {
+                output.Append(DEFAULT_ERROR + "No settings found for the key: " + embedKey);
+                return;
+            }
+
             if (rawContent)
             {
-                json = input;
+                json = inputText;
             }
             else
             {
-                if (settings.ContainsKey("UseCustomEmbedSettings") && bool.Parse(settings["UseCustomEmbedSettings"]))
+                if (settings.UseEmbeds)
                 {
-                    json = GenerateEmbed(input);
+                    json = GenerateEmbed(inputText, embedFromKey);
                 }
                 else
                 {
-                    json = GenerateRawTextJson(input);
+                    json = GenerateRawTextJson(inputText);
                 }
             }
             try
             {
-                SendRequest(json, settings);
+                SendRequest(json, embedFromKey);
             }
             catch (WebException e)
             {
-                WebResponse r = e.Response;
                 output.Append(DEFAULT_ERROR + "The post request failed to Discord with the content " + json + " and the response " + e.Message);
                 return;
             }
@@ -50,9 +68,9 @@ namespace ArmaHook
             return;
         }
 
-        public static bool SendRequest(string input, Dictionary<string, string> settings)
+        public static bool SendRequest(string input, CustomEmbed embedSettings)
         {
-            string url = (string)settings["DiscordURL"];
+            string url = embedSettings.DiscordURL;
             using (WebClient wb = new WebClient())
             {
                 wb.Headers.Add("Content-Type", "application/json");
@@ -61,13 +79,13 @@ namespace ArmaHook
             }
         }
 
-        public static string GenerateEmbed(string textToDisplay)
+        public static string GenerateEmbed(string textToDisplay, CustomEmbed embed)
         {
+
             Dictionary<string, List<object>> baseObject = new Dictionary<string, List<object>>();
-            Dictionary<string, object> initialEmbedSettings = SettingsManager.LoadEmbedSettings();
-            initialEmbedSettings.Add("description", textToDisplay);
+            embed.EmbedData.Add("description", textToDisplay);
             List<object> embedsList = new List<object>();
-            embedsList.Add(initialEmbedSettings);
+            embedsList.Add(embed.EmbedData);
             baseObject.Add("embeds", embedsList);
             return JsonConvert.SerializeObject(baseObject);
         }

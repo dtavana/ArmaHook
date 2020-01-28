@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29709.97
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmaHook", "LogDLL\ArmaHook.csproj", "{DC42EEAF-E4F1-4ED8-AE72-D93B9447936D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArmaHook", "ArmaHook.csproj", "{DC42EEAF-E4F1-4ED8-AE72-D93B9447936D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +20,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {EC47EC75-88D8-4D1D-A14C-BA98BBFFB59A}
+		SolutionGuid = {491C6E6B-F923-4E1D-AF82-1933AACF036C}
 	EndGlobalSection
 EndGlobal
